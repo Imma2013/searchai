@@ -1,4 +1,4 @@
-import OpenRouter from '@openrouter/sdk';
+import { OpenRouter } from '@openrouter/sdk';
 import { SearchResult } from './scraper';
 
 export type AIResponse = {
@@ -19,7 +19,7 @@ export async function generateAIAnswer(
     .map((r, i) => `Source ${i + 1} (${r.domain}):\nTitle: ${r.title}\nSnippet: ${r.snippet}`)
     .join('\n\n');
 
-  const prompt = `You are a helpful search assistant. Based on the following search results, give a clear, concise answer (2-4 sentences) to the user's question. Be factual and direct — no preamble like "Based on the results".
+  const prompt = `You are a helpful search assistant. Based on the following search results, give a clear, concise answer (2-4 sentences). Be factual and direct — no preamble like "Based on the results".
 
 User question: "${query}"
 

@@ -1,17 +1,19 @@
-import { initializeApp, getApps } from 'firebase/app';
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, User } from 'firebase/auth';
-const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+// Firebase auth — stubbed for quick test deploy
+// Add firebase package and real config when ready to enable auth
+export type User = {
+  uid: string;
+  email: string | null;
+  displayName: string | null;
 };
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-export const auth = getAuth(app);
-export const googleProvider = new GoogleAuthProvider();
-export const signInWithGoogle = () => signInWithPopup(auth, googleProvider);
-export const signOutUser = () => signOut(auth);
-export const onAuthChange = (callback: (user: User | null) => void) => onAuthStateChanged(auth, callback);
-export type { User };
+
+export const signInWithGoogle = async () => {
+  throw new Error("Firebase auth not configured yet");
+};
+
+export const signOutUser = async () => {
+  throw new Error("Firebase auth not configured yet");
+};
+
+export const onAuthChange = (_callback: (user: User | null) => void) => {
+  return () => {};
+};
