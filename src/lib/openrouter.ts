@@ -1,4 +1,3 @@
-import { OpenRouter } from '@openrouter/sdk';
 import { SearchResult } from './scraper';
 
 export type AIResponse = {
@@ -6,10 +5,6 @@ export type AIResponse = {
   modelUsed: string;
   sourceUrl: string;
 };
-
-const client = new OpenRouter({
-  apiKey: process.env.OPENROUTER_API_KEY!,
-});
 
 export async function generateAIAnswer(
   query: string,
@@ -26,13 +21,32 @@ User question: "${query}"
 Search results:
 ${context}`;
 
-  const response = await client.chat.send({
-    model: 'openrouter/free',
-    messages: [{ role: 'user', content: prompt }],
+  const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+      'Content-Type': 'application/json',
+      'HTTP-Referer': 'https://searchai-1-f2au.onrender.com',
+      'X-Title': 'SearchAI',
+    },
+    body: JSON.stringify({
+      model: 'openrouter/free',
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 300,
+    }),
   });
 
-  const answer = response.choices[0]?.message?.content || 'No answer generated.';
-  const modelUsed = (response as { model?: string }).model || 'openrouter/free';
+  if (!res.ok) {
+    throw new Error(`OpenRouter error: ${res.status} ${res.statusText}`);
+  }
+
+  const data = await res.json() as {
+    model?: string;
+    choices: Array<{ message: { content: string } }>;
+  };
+
+  const answer = data.choices?.[0]?.message?.content?.trim() || 'No answer generated.';
+  const modelUsed = data.model || 'openrouter/free';
 
   return {
     answer,
