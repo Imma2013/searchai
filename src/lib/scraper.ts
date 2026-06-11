@@ -10,11 +10,15 @@ export type SearchResult = {
 export async function scrapeSearchResults(query: string): Promise<SearchResult[]> {
   const browser = await chromium.launch({
     headless: true,
+    executablePath: process.env.PLAYWRIGHT_BROWSERS_PATH
+      ? undefined
+      : undefined,
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
       '--disable-dev-shm-usage',
       '--disable-gpu',
+      '--single-process',
     ],
   });
 
@@ -32,8 +36,7 @@ export async function scrapeSearchResults(query: string): Promise<SearchResult[]
 
     const results = await page.evaluate(() => {
       const items: { title: string; url: string; snippet: string }[] = [];
-      const els = document.querySelectorAll('#b_results .b_algo');
-      els.forEach((el) => {
+      document.querySelectorAll('#b_results .b_algo').forEach((el) => {
         const titleEl = el.querySelector('h2 a');
         const snippetEl = el.querySelector('.b_caption p');
         if (titleEl && snippetEl) {

@@ -5,15 +5,13 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start -p $PORT",
-    "postinstall": "npx playwright install chromium --with-deps"
+    "start": "next start -p ${PORT:-3000}"
   },
   "dependencies": {
     "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18",
     "@openrouter/sdk": "^0.4.0",
-    "@playwright/mcp": "^0.0.18",
     "playwright": "^1.44.0"
   },
   "devDependencies": {
